@@ -114,6 +114,10 @@ func (m Model) updateInput(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.Type {
 		case tea.KeyCtrlC:
 			return m, tea.Quit
+		case tea.KeyCtrlD:
+			if m.input.Value() == "" {
+				return m, tea.Quit
+			}
 		case tea.KeyEnter:
 			q := m.input.Value()
 			if q == "" {
