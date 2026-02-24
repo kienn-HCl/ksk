@@ -3,11 +3,19 @@ package search
 import (
 	"fmt"
 	"net/http"
+	"net/http/cookiejar"
 	"net/url"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
+
+var ddgClient *http.Client
+
+func init() {
+	jar, _ := cookiejar.New(nil)
+	ddgClient = &http.Client{Jar: jar}
+}
 
 type DuckDuckGo struct {
 	Region string // e.g. "jp", "us", "de"
@@ -16,9 +24,11 @@ type DuckDuckGo struct {
 const ddgEndpoint = "https://html.duckduckgo.com/html/"
 
 var ddgHeaders = http.Header{
-	"User-Agent":   {"Mozilla/5.0 (X11; Linux x86_64; rv:133.0) Gecko/20100101 Firefox/133.0"},
-	"Content-Type": {"application/x-www-form-urlencoded"},
-	"Referer":      {"https://html.duckduckgo.com/"},
+	"User-Agent":      {"Mozilla/5.0 (X11; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0"},
+	"Content-Type":    {"application/x-www-form-urlencoded"},
+	"Accept":          {"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"},
+	"Accept-Language": {"en-US,en;q=0.5"},
+	"Referer":         {"https://html.duckduckgo.com/"},
 }
 
 func (d *DuckDuckGo) Name() string { return "duckduckgo" }
@@ -70,7 +80,7 @@ func ddgDoSearch(form url.Values, pageNum int) (*Page, error) {
 	}
 	req.Header = ddgHeaders.Clone()
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := ddgClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("performing search: %w", err)
 	}
