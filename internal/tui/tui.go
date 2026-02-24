@@ -3,6 +3,7 @@ package tui
 import (
 	"fmt"
 
+	"github.com/atotto/clipboard"
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -159,6 +160,10 @@ func (m Model) updateResults(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter", "o":
 			if r := m.results.SelectedResult(); r != nil {
 				_ = browser.Open(r.URL)
+			}
+		case "y":
+			if r := m.results.SelectedResult(); r != nil {
+				_ = clipboard.WriteAll(r.URL)
 			}
 		case "/":
 			m.state = stateInput
