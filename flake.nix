@@ -27,6 +27,12 @@
           ...
         }:
         {
+          packages.default = pkgs.buildGoModule {
+            pname = "ksk";
+            version = "0.1.0";
+            src = ./.;
+            vendorHash = "sha256-9X83GaRWbRA4DwFPlsP7un+bQW7nyAc5dtTEqQRJOo0=";
+          };
           devShells.default = pkgs.mkShell {
             packages = with pkgs; [
               go
